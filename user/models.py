@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.utils import timezone
 from django.contrib.auth.models import (
     BaseUserManager,
     AbstractBaseUser,
@@ -62,12 +63,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDER_CHOICES = (("M", "Male"), ("F", "Female"), ("O", "Other"))
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     username = models.CharField(db_index=True, max_length=255, unique=True)
-    email = models.EmailField(max_length=60, unique=True)
-    password = models.CharField(max_length=255)
-    phone = models.CharField(max_length=100, default="+233  ")
+    email = models.EmailField(max_length=255, unique=True)
+    password = models.CharField(max_length=128)
+    phone = models.CharField(max_length=255, default="+233  ")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default="O")
     dob = models.DateField(null=True)
     bio = models.TextField(null=True)
@@ -79,6 +80,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     bus_location = models.CharField(max_length=255, null=True)
     bus_website = models.URLField(null=True)
     followers = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
