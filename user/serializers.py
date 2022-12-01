@@ -9,6 +9,7 @@ from .utils import is_email_valid, is_username_valid
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+    # tokens = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -45,12 +46,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         valid, error_message = is_username_valid(value)
         if not valid:
             raise serializers.ValidationError(error_message)
-        return "@" + value
+        return value
 
     def create(self, validated_data):
         # Return user after creation
 
         # cross check with og code on dev.io if error
+        # return User.objects.create_user(**validated_data)
         return User.objects.create_user(**validated_data)
 
 
@@ -59,7 +61,6 @@ class LoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     is_staff = serializers.BooleanField(read_only=True)
-
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
@@ -99,4 +100,66 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = []
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password",
+            "phone",
+            "gender",
+            "dob",
+            "bio",
+            "profile_image",
+            "cover_image",
+            "is_vendor",
+            "bus_name",
+            "bus_category",
+            "bus_location",
+            "bus_website",
+            "is_active",
+            "is_staff",
+            "is_verified",
+            "created_at",
+            "updated_at",
+            "tokens",
+        ]
+
+        read_only_fields = ["tokens", "is_staff", "id", "is_verified"]
+
+    def update(self, instance, validated_data):
+        # Perform an update on a user
+        password = validated_data.get("password", None)
+        username = validated_data.get("username", None)
+
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+
+        if password is not None:
+            instance.set_password(password)
+
+        if username is not None:
+            valid, error_message = is_username_valid(username)
+            if not valid:
+                raise serializers.ValidationError(error_message)
+
+        instance.save()
+
+        return instance
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        # Validate token
+        self.token = attrs["refresh"]
+        return attrs
+
+    def save(self, **kwargs):
+        # Validate save blacklisted token
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError as ex:
+            raise exceptions.AuthenticationFailed(ex)

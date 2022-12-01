@@ -15,25 +15,23 @@ class UserManager(BaseUserManager):
         self,
         first_name,
         last_name,
+        username,
         email,
-        phone,
         gender,
+        dob,
+        phone,
         password=None,
         is_staff=False,
         is_superuser=False,
     ):
         if not email:
             raise ValueError("User must have an email")
-        if not first_name:
-            raise ValueError("User must have a first name")
-        if not last_name:
-            raise ValueError("User must have a last name")
-        if not gender:
-            raise ValueError("User must have a gender")
 
-        user = self.model(email=self.normalize_email(email))
+        user = self.model(username=username, email=self.normalize_email(email))
         user.first_name = first_name
         user.last_name = last_name
+        user.gender = gender
+        user.dob = dob
         user.phone = phone
         user.set_password(password)
         user.is_active = True
@@ -43,24 +41,29 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, first_name, last_name, email, phone, password, gender):
+    def create_superuser(
+        self, first_name, last_name, username, email, gender, dob, phone, password
+    ):
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
+            username=username,
             email=email,
+            gender=gender,
+            dob=dob,
             phone=phone,
             password=password,
-            gender=gender,
-            is_staff=True,
-            is_superuser=True,
         )
+        user.is_superuser = True
+        user.is_staff = True
+        user.is_active = True
         user.save()
 
         return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    GENDER_CHOICES = (("M", "Male"), ("F", "Female"), ("O", "Other"))
+    GENDER_CHOICES = (("Male", "Male"), ("Female", "Female"), ("Other", "Other"))
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255)
@@ -68,8 +71,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=128)
-    phone = models.CharField(max_length=255, default="+233  ")
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default="O")
+    phone = models.CharField(max_length=255, default="+233")
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="Other")
     dob = models.DateField(null=True)
     bio = models.TextField(null=True)
     profile_image = models.URLField(null=True)
@@ -79,15 +82,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     bus_category = models.CharField(max_length=255, null=True)
     bus_location = models.CharField(max_length=255, null=True)
     bus_website = models.URLField(null=True)
-    followers = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+    blocked = models.BooleanField(default=False)
+    country = models.CharField(max_length=100, null=True, default="country")
+    following = models.ManyToManyField(
+        "self",
+        null=True,
+        related_name="followers",
+        symmetrical=False,
+    )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["username", "first_name", "last_name", "dob", "gender", "phone"]
 
     objects = UserManager()
 

@@ -8,10 +8,18 @@ class User(admin.ModelAdmin):
         "id",
         "first_name",
         "last_name",
-        "email",
         "username",
+        "email",
+        "password",
         "phone",
+        "gender",
         "dob",
+        "bio",
+        "is_vendor",
+        "is_active",
+        "is_staff",
+        "is_verified",
+        "created_at",
     )
 
 
