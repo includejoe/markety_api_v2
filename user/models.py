@@ -87,11 +87,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
-    blocked = models.BooleanField(default=False)
-    country = models.CharField(max_length=100, null=True, default="country")
+    is_blocked = models.BooleanField(default=False)
+    country = models.CharField(max_length=100, null=True, default="gh")
     following = models.ManyToManyField(
         "self",
-        null=True,
         related_name="followers",
         symmetrical=False,
     )

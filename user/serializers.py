@@ -7,6 +7,18 @@ from .models import User
 from .utils import is_email_valid, is_username_valid
 
 
+class FollowersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["followers"]
+
+
+class FollowingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["following"]
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
     # tokens = serializers.SerializerMethodField()
@@ -121,6 +133,9 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "is_verified",
+            "is_blocked",
+            "followers",
+            "country",
             "created_at",
             "updated_at",
             "tokens",

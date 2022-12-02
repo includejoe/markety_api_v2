@@ -10,15 +10,16 @@ class User(admin.ModelAdmin):
         "last_name",
         "username",
         "email",
-        "password",
         "phone",
         "gender",
         "dob",
         "bio",
+        "country",
         "is_vendor",
         "is_active",
         "is_staff",
         "is_verified",
+        "is_blocked",
         "created_at",
     )
 

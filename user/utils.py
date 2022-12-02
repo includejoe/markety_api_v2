@@ -36,6 +36,7 @@ def is_username_valid(value):
     return True, ""
 
 
+# junk code: to be removed
 # Custom JSON Renderer
 class UserJSONRenderer(JSONRenderer):
     # Custom method
