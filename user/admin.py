@@ -19,7 +19,6 @@ class User(admin.ModelAdmin):
         "is_active",
         "is_staff",
         "is_verified",
-        "is_blocked",
         "created_at",
     )
 

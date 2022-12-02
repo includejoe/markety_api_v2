@@ -63,7 +63,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    GENDER_CHOICES = (("Male", "Male"), ("Female", "Female"), ("Other", "Other"))
+    GENDER_CHOICES = (("male", "male"), ("female", "female"), ("other", "other"))
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255)
@@ -75,19 +75,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="Other")
     dob = models.DateField(null=True)
     bio = models.TextField(null=True)
+    location = models.CharField(max_length=255, null=True)
     profile_image = models.URLField(null=True)
     cover_image = models.URLField(null=True)
     is_vendor = models.BooleanField(default=False)
     bus_name = models.CharField(max_length=255, blank=True, null=True)
     bus_category = models.CharField(max_length=255, null=True)
-    bus_location = models.CharField(max_length=255, null=True)
     bus_website = models.URLField(null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
-    is_blocked = models.BooleanField(default=False)
+    blocked_users = models.ManyToManyField(
+        "self",
+        related_name="blocked_by",
+        symmetrical=False,
+    )
     country = models.CharField(max_length=100, null=True, default="gh")
     following = models.ManyToManyField(
         "self",
