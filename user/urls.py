@@ -11,10 +11,11 @@ from .views import (
 
 app_name = "user"
 
+
 urlpatterns = [
     path("register/", register_user_view, name="register_user"),
     path("login/", login_user_view, name="login_user"),
-    path("", retrieve_update_user_view, name="user"),
+    path("", retrieve_update_user_view, name="retrieve_update_user"),
     path("<str:me>/<str:user>/follow/", follow_user_view, name="follow_user"),
     path("<str:username>/followers/", get_user_followers_view, name="user_followers"),
     path("<str:username>/following/", get_user_following_view, name="user_following"),

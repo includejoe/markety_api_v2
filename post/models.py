@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from user.models import User
 from django.utils import timezone
+from django.contrib.auth.models import PermissionsMixin
 
 # Create your models here.
 
@@ -19,6 +20,7 @@ class Post(models.Model):
     image1 = models.URLField()
     image2 = models.URLField()
     image3 = models.URLField()
+    is_sold = models.BooleanField(default=False)
     likes = models.ManyToManyField(User, related_name="likes")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

@@ -34,10 +34,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "phone",
             "gender",
             "dob",
+            "location",
             "is_vendor",
             "bus_name",
             "bus_category",
-            "bus_location",
         ]
 
     def validate_email(self, value):
@@ -123,17 +123,18 @@ class UserSerializer(serializers.ModelSerializer):
             "gender",
             "dob",
             "bio",
+            "location",
             "profile_image",
             "cover_image",
             "is_vendor",
             "bus_name",
             "bus_category",
-            "bus_location",
             "bus_website",
             "is_active",
             "is_staff",
             "is_verified",
-            "is_blocked",
+            "posts",
+            "blocked_users",
             "followers",
             "country",
             "created_at",
@@ -141,7 +142,12 @@ class UserSerializer(serializers.ModelSerializer):
             "tokens",
         ]
 
-        read_only_fields = ["tokens", "is_staff", "id", "is_verified"]
+        read_only_fields = [
+            "tokens",
+            "is_staff",
+            "id",
+            "is_verified",
+        ]
 
     def update(self, instance, validated_data):
         # Perform an update on a user
