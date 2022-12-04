@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError, APIException
 
-from base.utils import jwt_decode
+from base.utils import jwt_decode, delete_success
 from .serializers import PostSerializer
 from .models import Post
 from user.models import User
@@ -61,7 +61,6 @@ get_user_posts_view = GetUserPosts.as_view()
 class PostDetail(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
-    delete_success = {"detail": "Post deleted successfully"}
 
     # GET REQUEST
     def get(self, request, post_id):
@@ -85,14 +84,14 @@ class PostDetail(APIView):
         try:
             post_to_delete = Post.objects.get(id=post_id)
         except Exception as e:
-            raise ParseError(detail=invalid_post_id, code=401)
+            raise ParseError(detail=invalid_post_id)
 
         if post_to_delete.user.id != post_owner.id:
             raise ParseError(detail="User does not own this post", code=401)
 
         try:
             post_to_delete.delete()
-            return Response(self.delete_success, status=status.HTTP_200_OK)
+            return Response(delete_success, status=status.HTTP_200_OK)
         except Exception as e:
             raise APIException(detail=e)
 

@@ -1,8 +1,16 @@
 from django.urls import path
-from .views import post_comments_view
+from .views import (
+    create_comment_view,
+    get_post_comments_view,
+    like_comment_view,
+    comment_detail_view,
+)
 
 app_name = "comment"
 
 urlpatterns = [
-    path("<str:post_id>/", post_comments_view, name="comments"),
+    path("create/", create_comment_view, name="create_comment"),
+    path("<str:post_id>/", get_post_comments_view, name="get_post_comments"),
+    path("like/<str:comment_id>/", like_comment_view, name="like_comment"),
+    path("detail/<str:comment_id>/", comment_detail_view, name="comment_detail"),
 ]

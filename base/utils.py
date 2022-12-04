@@ -10,3 +10,6 @@ def jwt_decode(token):
     jwt = token[7:]
     payload = JWT.decode(jwt, env("JWT_SECRET_KEY"), env("JWT_ALGORITHM"))
     return payload["user_id"]
+
+
+delete_success = {"detail": "Deleted successfully"}

@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from . import serializers
 from .models import User
 
-# api/v1/user/register/
+# user/register/
 class RegistrationAPIView(APIView):
     permission_classes = [AllowAny]
     serializer_class = serializers.RegistrationSerializer
@@ -28,7 +28,7 @@ class RegistrationAPIView(APIView):
 
 register_user_view = RegistrationAPIView.as_view()
 
-# api/v1/user/login/
+# user/login/
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
     serializer_class = serializers.LoginSerializer
@@ -47,7 +47,7 @@ class LoginAPIView(APIView):
 
 login_user_view = LoginAPIView.as_view()
 
-# api/v1/user/
+# user/
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserSerializer
@@ -74,7 +74,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
 retrieve_update_user_view = UserRetrieveUpdateAPIView.as_view()
 
-# api/v1/user/<str:me>/<str:user>/follow
+# user/follow/<str:me>/<str:user>/
 class FollowUser(APIView):
     serializer_class = serializers.FollowingSerializer
     permission_classes = [IsAuthenticated]
@@ -105,7 +105,7 @@ class FollowUser(APIView):
 follow_user_view = FollowUser.as_view()
 
 
-# api/v1/<str:username>/followers
+# user/followers/<str:username>/
 class GetUserFollowers(APIView):
     serializer_class = serializers.FollowersSerializer
     permission_classes = [IsAuthenticated]
@@ -126,7 +126,7 @@ class GetUserFollowers(APIView):
 get_user_followers_view = GetUserFollowers.as_view()
 
 
-# api/v1/<str:username>/following
+# user/<str:username>/following
 class GetUserFollowing(APIView):
     serializer_class = serializers.FollowingSerializer
     permission_classes = [IsAuthenticated]
@@ -168,7 +168,7 @@ get_user_following_view = GetUserFollowing.as_view()
 #         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
-# api/v1/user/logout/
+# user/logout/
 class LogoutAPIView(APIView):
     serializer_class = serializers.LogoutSerializer
     permission_classes = [IsAuthenticated]
