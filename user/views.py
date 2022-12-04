@@ -79,27 +79,27 @@ class FollowUser(APIView):
     serializer_class = serializers.FollowingSerializer
     permission_classes = [IsAuthenticated]
 
-    def put(self, request, me, user):
-        if me == user:
-            raise ParseError(detail="User cannot follow itself", code=400)
+    def patch(self, request, me, user):
+        try:
+            if me == user:
+                raise ParseError(detail="User cannot follow itself", code=400)
 
-        current_user = User.objects.get(username=me)
-        user_to_follow = User.objects.get(username=user)
+            current_user = User.objects.get(username=me)
+            user_to_follow = User.objects.get(username=user)
 
-        if current_user is None or user_to_follow is None:
-            raise ParseError(detail="Invalid data", code=400)
+            already_followed = current_user.following.filter(username=user).exists()
 
-        already_followed = current_user.following.filter(username=user).exists()
+            if already_followed:
+                current_user.following.remove(user_to_follow)
+            else:
+                current_user.following.add(user_to_follow)
 
-        if already_followed:
-            current_user.following.remove(user_to_follow)
-        else:
-            current_user.following.add(user_to_follow)
+            current_user.save()
+            serializer = self.serializer_class(current_user)
 
-        current_user.save()
-        serializer = self.serializer_class(current_user)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise ParseError(detail=e, code=400)
 
 
 follow_user_view = FollowUser.as_view()
