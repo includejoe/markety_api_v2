@@ -2,11 +2,11 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, APIException
 from rest_framework.generics import RetrieveUpdateAPIView
 
 
-from rest_framework.decorators import api_view
+from base.utils import jwt_decode
 
 
 from . import serializers
@@ -74,20 +74,26 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
 retrieve_update_user_view = UserRetrieveUpdateAPIView.as_view()
 
-# user/follow/<str:me>/<str:user>/
+# user/follow/<str:user>/
 class FollowUser(APIView):
-    serializer_class = serializers.FollowingSerializer
+    serializer_class = serializers.FollowUserSerializer
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, me, user):
+    def patch(self, request, username):
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+        current_user = User.objects.get(id=user_id)
+
         try:
-            if me == user:
-                raise ParseError(detail="User cannot follow itself", code=400)
+            user_to_follow = User.objects.get(username=username)
+        except Exception as e:
+            raise ParseError(detail=e)
 
-            current_user = User.objects.get(username=me)
-            user_to_follow = User.objects.get(username=user)
+        if current_user.id == user_to_follow.id:
+            raise ParseError(detail="User cannot follow itself", code=400)
 
-            already_followed = current_user.following.filter(username=user).exists()
+        try:
+            already_followed = current_user.following.filter(username=username).exists()
 
             if already_followed:
                 current_user.following.remove(user_to_follow)
@@ -111,10 +117,10 @@ class GetUserFollowers(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, username):
-        user = User.objects.get(username=username)
-
-        if user is None:
-            raise ParseError(detail="Invalid data", code=400)
+        try:
+            user = User.objects.get(username=username)
+        except:
+            raise ParseError(detail="Username not found", code=404)
 
         followers = user.followers.all()
 
@@ -132,10 +138,10 @@ class GetUserFollowing(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, username):
-        user = User.objects.get(username=username)
-
-        if user is None:
-            raise ParseError(detail="Invalid data", code=400)
+        try:
+            user = User.objects.get(username=username)
+        except:
+            raise ParseError(detail="Username not found", code=404)
 
         following = user.following.all()
         serializer = self.serializer_class(following, many=True)
@@ -145,27 +151,62 @@ class GetUserFollowing(APIView):
 
 get_user_following_view = GetUserFollowing.as_view()
 
+# user/block/<str:username>/
+class BlockUser(APIView):
+    serializer_class = serializers.BlockUserSerializer
+    permission_classes = [IsAuthenticated]
 
-# Blocked Logic
-# api/v1/<str:username>/block
-# @api_view(['PUT'])
-# def Block_user(request,username):
-#     '''
-#     Purpose: Block the user
-#     Input: -
-#     Output: Blocked user
-#     '''
-#     try:
-#         user = TUser.objects.get(username=username)
-#         user.blocked = True
-#         user.save()
-#         serializer = TUserSerializer(user)
-#         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-#     except Exception as e:
-#         error = {'Error_code': status.HTTP_400_BAD_REQUEST,
-#                         'Error_Message': "User does not exist"}
-#         logger.error(e)
-#         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, username):
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+        current_user = User.objects.get(id=user_id)
+
+        try:
+            user_to_block = User.objects.get(username=username)
+        except Exception as e:
+            raise ParseError(detail=e)
+
+        if current_user.id == user_to_block.id:
+            raise ParseError(detail="User cannot block itself", code=400)
+
+        try:
+            already_blocked = current_user.blocked_users.filter(
+                username=username
+            ).exists()
+
+            if already_blocked:
+                current_user.blocked_users.remove(user_to_block)
+            else:
+                current_user.blocked_users.add(user_to_block)
+
+            current_user.save()
+            serializer = self.serializer_class(current_user)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise ParseError(detail=e, code=400)
+
+
+block_user_view = BlockUser.as_view()
+
+
+class GetBlockedUsers(APIView):
+    serializer_class = serializers.BlockedUsersSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+        user = User.objects.get(id=user_id)
+        try:
+            blocked = user.blocked_users.all()
+            serializer = self.serializer_class(blocked, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise APIException(detail=e)
+
+
+get_blocked_users_view = GetBlockedUsers.as_view()
 
 
 # user/logout/

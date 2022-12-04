@@ -7,16 +7,69 @@ from .models import User
 from .utils import is_email_valid, is_username_valid
 
 
+class UserPublicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "profile_image",
+            "cover_image",
+            "is_vendor",
+            "is_verified",
+        ]
+
+
+class FollowUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["following"]
+
+
+class BlockedUsersSerializer(serializers.ModelSerializer):
+    blocked_users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["blocked_users"]
+
+    def get_blocked_users(self, obj):
+        users = User.objects.get(id=obj.id)
+        serializer = UserPublicSerializer(users)
+        return serializer.data
+
+
+class BlockUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["blocked_users"]
+
+
 class FollowersSerializer(serializers.ModelSerializer):
+    followers = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["followers"]
 
+    def get_followers(self, obj):
+        users = User.objects.get(id=obj.id)
+        serializer = UserPublicSerializer(users)
+        return serializer.data
+
 
 class FollowingSerializer(serializers.ModelSerializer):
+    following = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["following"]
+
+    def get_following(self, obj):
+        users = User.objects.get(id=obj.id)
+        serializer = UserPublicSerializer(users)
+        return serializer.data
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -62,9 +115,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Return user after creation
-
-        # cross check with og code on dev.io if error
-        # return User.objects.create_user(**validated_data)
         return User.objects.create_user(**validated_data)
 
 

@@ -10,7 +10,7 @@ app_name = "comment"
 
 urlpatterns = [
     path("create/", create_comment_view, name="create_comment"),
-    path("<str:post_id>/", get_post_comments_view, name="get_post_comments"),
+    path("<str:post_id>/", get_post_comments_view, name="post_comments"),
     path("like/<str:comment_id>/", like_comment_view, name="like_comment"),
     path("detail/<str:comment_id>/", comment_detail_view, name="comment_detail"),
 ]
