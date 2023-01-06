@@ -9,7 +9,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Markety API",
         default_version="v1",
-        description="An API for markety clients",
+        description="Markety API Version 1",
         terms_of_service="https://www.markety.com/policies/terms/",
         contact=openapi.Contact(email="kvnqjoe@gmail.com"),
         license=openapi.License(name="BSD License"),
