@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+    path("auth/", include("authentication.urls")),
     path("user/", include("user.urls")),
     path("posts/", include("post.urls")),
     path("comments/", include("comment.urls")),

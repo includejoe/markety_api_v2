@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.exceptions import ParseError, APIException
 
 from base.utils import jwt_decode, delete_success
@@ -14,7 +14,7 @@ invalid_comment_id = "Invalid comment ID"
 
 
 # comments/create/
-class CreateComment(APIView):
+class CreateComment(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CreateCommentSerializer
 
@@ -32,7 +32,7 @@ class CreateComment(APIView):
 create_comment_view = CreateComment.as_view()
 
 # comments/<str:post_id>/
-class GetPostComments(APIView):
+class GetPostComments(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = CommentSerializer
 
@@ -45,7 +45,7 @@ class GetPostComments(APIView):
 get_post_comments_view = GetPostComments.as_view()
 
 # comments/like/<str:comment_id>/
-class LikeComment(APIView):
+class LikeComment(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
@@ -75,7 +75,7 @@ class LikeComment(APIView):
 like_comment_view = LikeComment.as_view()
 
 # comments/<str:comment_id>/
-class CommentDetail(APIView):
+class CommentDetail(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 

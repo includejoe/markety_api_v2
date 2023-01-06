@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.exceptions import ParseError, APIException
 
 from base.utils import jwt_decode, delete_success
@@ -14,7 +14,7 @@ invalid_post_id = "Invalid post ID"
 
 
 # posts/create
-class CreatePost(APIView):
+class CreatePost(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
 
@@ -36,7 +36,7 @@ class CreatePost(APIView):
 create_post_view = CreatePost.as_view()
 
 # posts/user/<str:username>/
-class GetUserPosts(APIView):
+class GetUserPosts(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
 
@@ -58,7 +58,7 @@ get_user_posts_view = GetUserPosts.as_view()
 
 
 # posts/<str:post_id>/
-class PostDetail(APIView):
+class PostDetail(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
 
@@ -122,7 +122,7 @@ class PostDetail(APIView):
 post_detail_view = PostDetail.as_view()
 
 # posts/
-class GetALlPosts(APIView):
+class GetALlPosts(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
 
@@ -139,7 +139,7 @@ class GetALlPosts(APIView):
 get_all_posts_view = GetALlPosts.as_view()
 
 # posts/like/<str:post_id>/
-class LikePost(APIView):
+class LikePost(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
 

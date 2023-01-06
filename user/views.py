@@ -1,51 +1,13 @@
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError, APIException
-from rest_framework.generics import RetrieveUpdateAPIView
-
+from rest_framework.generics import RetrieveUpdateAPIView, GenericAPIView
 
 from base.utils import jwt_decode
-
-
 from . import serializers
 from .models import User
 
-# user/register/
-class RegistrationAPIView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = serializers.RegistrationSerializer
-
-    def post(self, request):
-        # Return user response after a successful registration
-        user = request.data
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-register_user_view = RegistrationAPIView.as_view()
-
-# user/login/
-class LoginAPIView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = serializers.LoginSerializer
-
-    def post(self, request):
-        # Return user after login
-        user = request.data
-        serializer = self.serializer_class(data=user)
-
-        if not serializer.is_valid():
-            print(serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-login_user_view = LoginAPIView.as_view()
 
 # user/
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
@@ -75,7 +37,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 retrieve_update_user_view = UserRetrieveUpdateAPIView.as_view()
 
 # user/follow/<str:user>/
-class FollowUser(APIView):
+class FollowUser(GenericAPIView):
     serializer_class = serializers.FollowUserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -112,7 +74,7 @@ follow_user_view = FollowUser.as_view()
 
 
 # user/followers/<str:username>/
-class GetUserFollowers(APIView):
+class GetUserFollowers(GenericAPIView):
     serializer_class = serializers.FollowersSerializer
     permission_classes = [IsAuthenticated]
 
@@ -133,7 +95,7 @@ get_user_followers_view = GetUserFollowers.as_view()
 
 
 # user/<str:username>/following
-class GetUserFollowing(APIView):
+class GetUserFollowing(GenericAPIView):
     serializer_class = serializers.FollowingSerializer
     permission_classes = [IsAuthenticated]
 
@@ -152,7 +114,7 @@ class GetUserFollowing(APIView):
 get_user_following_view = GetUserFollowing.as_view()
 
 # user/block/<str:username>/
-class BlockUser(APIView):
+class BlockUser(GenericAPIView):
     serializer_class = serializers.BlockUserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -190,7 +152,7 @@ class BlockUser(APIView):
 block_user_view = BlockUser.as_view()
 
 
-class GetBlockedUsers(APIView):
+class GetBlockedUsers(GenericAPIView):
     serializer_class = serializers.BlockedUsersSerializer
     permission_classes = [IsAuthenticated]
 
@@ -207,20 +169,3 @@ class GetBlockedUsers(APIView):
 
 
 get_blocked_users_view = GetBlockedUsers.as_view()
-
-
-# user/logout/
-class LogoutAPIView(APIView):
-    serializer_class = serializers.LogoutSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        # Validate token and save
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-logout_user_view = LogoutAPIView.as_view()

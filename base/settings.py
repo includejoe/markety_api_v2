@@ -3,7 +3,6 @@ import environ
 from datetime import timedelta
 import django_heroku
 
-django_heroku.settings(locals())
 
 env = environ.Env()
 environ.Env.read_env()
@@ -33,9 +32,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third party apps
+    # third party apps
     "rest_framework",
-    # Local apps
+    "drf_yasg",
+    # local apps
+    "authentication",
     "user",
     "post",
     "comment",
@@ -144,3 +145,15 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Auth Token eg [Bearer JWT]": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    }
+}
+
+django_heroku.settings(locals())
