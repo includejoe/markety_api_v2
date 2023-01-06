@@ -1,6 +1,9 @@
 from pathlib import Path
 import environ
 from datetime import timedelta
+import django_heroku
+
+django_heroku.settings(locals())
 
 env = environ.Env()
 environ.Env.read_env()
