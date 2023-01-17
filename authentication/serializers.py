@@ -53,15 +53,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(max_length=255)
-    username = serializers.CharField(max_length=255, read_only=True)
+    username = serializers.CharField(max_length=255)
+    email = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     is_staff = serializers.BooleanField(read_only=True)
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
         # Get user tokens
-        user = User.objects.get(email=obj.email)
+        user = User.objects.get(username=obj.username)
         return {"refresh": user.tokens["refresh"], "access": user.tokens["access"]}
 
     class Meta:
@@ -70,16 +70,16 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         # Validate and return user login
-        email = data.get("email", None)
+        username = data.get("username", None)
         password = data.get("password", None)
 
-        if email is None:
-            raise serializers.ValidationError("An email address is required")
+        if username is None:
+            raise serializers.ValidationError("A username is required")
 
         if password is None:
             raise serializers.ValidationError("A password is required")
 
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
 
         if user is None:
             raise serializers.ValidationError("Invalid credentials")
