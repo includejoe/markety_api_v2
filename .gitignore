@@ -1,3 +1,4 @@
 env
 .env
 sandbox.py
+verify_aws@2023.pem
