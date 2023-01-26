@@ -33,7 +33,10 @@ def is_username_valid(value):
     if not bool(matched):
         return False, message_invalid
 
-    return True, ""
+    return (
+        True,
+        "Username can only contain letters, numbers, underscores and full stops. Username can't end with a full stop either",
+    )
 
 
 # junk code: to be removed
