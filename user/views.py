@@ -1,5 +1,6 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from django.http import JsonResponse
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError, APIException
 from rest_framework.generics import RetrieveUpdateAPIView, GenericAPIView
@@ -35,6 +36,25 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
 
 retrieve_update_user_view = UserRetrieveUpdateAPIView.as_view()
+
+
+class CheckUsername(GenericAPIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, username):
+        if len(username) < 3:
+            raise ParseError(detail="Username must be at least 3 letters")
+
+        username_exists = User.objects.filter(username=username).exists()
+
+        if username_exists:
+            return Response({"available": False}, status=status.HTTP_200_OK)
+        else:
+            return Response({"available": True}, status=status.HTTP_200_OK)
+
+
+check_username_view = CheckUsername.as_view()
+
 
 # user/follow/<str:user>/
 class FollowUser(GenericAPIView):
