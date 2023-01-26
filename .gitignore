@@ -1,4 +1,9 @@
 env
 .env
 sandbox.py
+<<<<<<< HEAD
 verify_aws@2023.pem
+=======
+verify_aws@2023.pem
+.vercel
+>>>>>>> develop
