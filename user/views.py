@@ -8,6 +8,7 @@ from rest_framework.generics import RetrieveUpdateAPIView, GenericAPIView
 from base.utils import jwt_decode
 from . import serializers
 from .models import User
+from .utils import is_username_valid
 
 
 # user/
@@ -42,8 +43,10 @@ class CheckUsername(GenericAPIView):
     permission_classes = [AllowAny]
 
     def get(self, request, username):
-        if len(username) < 3:
-            raise ParseError(detail="Username must be at least 3 letters")
+        valid, error_message = is_username_valid(username)
+
+        if not valid:
+            raise ParseError(detail=error_message)
 
         username_exists = User.objects.filter(username=username).exists()
 
