@@ -136,6 +136,8 @@ SIMPLE_JWT = {
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = ["https://marketyapi.up.railway.app"]
+
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "Auth Token eg [Bearer JWT]": {
