@@ -29,12 +29,10 @@ class UserSerializer(serializers.ModelSerializer):
             "bus_category",
             "bus_website",
             "is_active",
-            "is_staff",
             "is_verified",
             "posts",
             "blocked_users",
             "followers",
-            "country",
             "created_at",
             "updated_at",
             "tokens",
@@ -42,7 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             "tokens",
-            "is_staff",
             "id",
             "is_verified",
         ]
