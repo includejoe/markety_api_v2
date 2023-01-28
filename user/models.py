@@ -18,8 +18,10 @@ class UserManager(BaseUserManager):
         username,
         email,
         gender,
+        location,
         dob,
         phone,
+        is_vendor,
         password=None,
         is_staff=False,
         is_superuser=False,
@@ -31,8 +33,10 @@ class UserManager(BaseUserManager):
         user.first_name = first_name
         user.last_name = last_name
         user.gender = gender
+        user.location = location
         user.dob = dob
         user.phone = phone
+        user.is_vendor = is_vendor
         user.set_password(password)
         user.is_active = True
         user.is_staff = is_staff
@@ -42,7 +46,16 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self, first_name, last_name, username, email, gender, dob, phone, password
+        self,
+        first_name,
+        last_name,
+        username,
+        email,
+        gender,
+        location,
+        dob,
+        phone,
+        password,
     ):
         user = self.create_user(
             first_name=first_name,
@@ -50,6 +63,7 @@ class UserManager(BaseUserManager):
             username=username,
             email=email,
             gender=gender,
+            location=location,
             dob=dob,
             phone=phone,
             password=password,
