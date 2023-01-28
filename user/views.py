@@ -51,7 +51,7 @@ class CheckUsername(GenericAPIView):
         username_exists = User.objects.filter(username=username).exists()
 
         if username_exists:
-            return Response({"available": False}, status=status.HTTP_200_OK)
+            return Response({"available": False}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"available": True}, status=status.HTTP_200_OK)
 
