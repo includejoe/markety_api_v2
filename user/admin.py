@@ -14,7 +14,7 @@ class User(admin.ModelAdmin):
         "gender",
         "dob",
         "bio",
-        "country",
+        "location",
         "is_vendor",
         "is_active",
         "is_staff",

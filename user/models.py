@@ -92,7 +92,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name="blocked_by",
         symmetrical=False,
     )
-    country = models.CharField(max_length=100, null=True, default="gh")
     following = models.ManyToManyField(
         "self",
         related_name="followers",
