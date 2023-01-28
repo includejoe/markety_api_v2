@@ -63,7 +63,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    GENDER_CHOICES = (("male", "male"), ("female", "female"), ("other", "other"))
+    GENDER_CHOICES = (("Male", "Male"), ("Female", "Female"), ("Other", "Other"))
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255)
