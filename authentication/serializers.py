@@ -57,16 +57,16 @@ class LoginSerializer(serializers.ModelSerializer):
     email = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     is_staff = serializers.BooleanField(read_only=True)
-    tokens = serializers.SerializerMethodField()
+    jwt = serializers.SerializerMethodField()
 
-    def get_tokens(self, obj):
+    def get_jwt(self, obj):
         # Get user tokens
         user = User.objects.get(username=obj.username)
-        return {"refresh": user.tokens["refresh"], "access": user.tokens["access"]}
+        return user.tokens["access"]
 
     class Meta:
         model = User
-        fields = ["email", "username", "password", "tokens", "is_staff"]
+        fields = ["email", "username", "password", "jwt", "is_staff"]
 
     def validate(self, data):
         # Validate and return user login
