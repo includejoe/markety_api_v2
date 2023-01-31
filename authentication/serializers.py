@@ -8,7 +8,6 @@ from user.utils import is_email_valid, is_username_valid
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
-    # tokens = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -53,10 +52,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=255)
-    email = serializers.CharField(max_length=255, read_only=True)
+    username = serializers.CharField(max_length=255, write_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
-    is_staff = serializers.BooleanField(read_only=True)
     jwt = serializers.SerializerMethodField()
 
     def get_jwt(self, obj):
@@ -66,7 +63,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "username", "password", "jwt", "is_staff"]
+        fields = ["username", "password", "jwt"]
 
     def validate(self, data):
         # Validate and return user login
