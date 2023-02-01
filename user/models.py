@@ -22,6 +22,8 @@ class UserManager(BaseUserManager):
         dob,
         phone,
         is_vendor,
+        bus_name=None,
+        bus_category=None,
         password=None,
         is_staff=False,
         is_superuser=False,
@@ -37,6 +39,8 @@ class UserManager(BaseUserManager):
         user.dob = dob
         user.phone = phone
         user.is_vendor = is_vendor
+        user.bus_name = bus_name
+        user.bus_category = bus_category
         user.set_password(password)
         user.is_active = True
         user.is_staff = is_staff
@@ -102,14 +106,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     blocked_users = models.ManyToManyField(
-        "self",
-        related_name="blocked_by",
-        symmetrical=False,
+        "self", related_name="blocked_by", symmetrical=False, blank=True
     )
     following = models.ManyToManyField(
-        "self",
-        related_name="followers",
-        symmetrical=False,
+        "self", related_name="followers", symmetrical=False, blank=True
     )
 
     USERNAME_FIELD = "username"
