@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_verified",
             "posts",
             "followers",
+            "following",
             "created_at",
         ]
 
