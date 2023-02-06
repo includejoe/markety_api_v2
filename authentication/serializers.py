@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import exceptions, serializers
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework_simplejwt.tokens import TokenError
 
 from user.models import User
 from user.utils import is_email_valid, is_username_valid
@@ -88,16 +88,17 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class LogoutSerializer(serializers.Serializer):
-    refresh = serializers.CharField()
+    token = serializers.CharField()
 
     def validate(self, attrs):
         # Validate token
-        self.token = attrs["refresh"]
+        self.token = attrs["token"]
         return attrs
 
     def save(self, **kwargs):
-        # Validate save blacklisted token
+        # Validate save blacklisted access token
         try:
-            RefreshToken(self.token).blacklist()
+            pass
+            # AccessToken(self.token).set_exp(int(time.time()))
         except TokenError as ex:
             raise exceptions.AuthenticationFailed(ex)

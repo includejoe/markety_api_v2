@@ -1,9 +1,9 @@
 from rest_framework import status
-from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError, APIException
 from rest_framework.generics import RetrieveUpdateAPIView, GenericAPIView
+from rest_framework.views import APIView
 
 from base.utils import jwt_decode
 from . import serializers
@@ -39,7 +39,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 retrieve_update_user_view = UserRetrieveUpdateAPIView.as_view()
 
 
-class CheckUsername(GenericAPIView):
+class CheckUsername(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, username):

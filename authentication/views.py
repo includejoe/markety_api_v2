@@ -51,7 +51,7 @@ class LogoutAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"successful": True}, status=status.HTTP_200_OK)
 
 
 logout_user_view = LogoutAPIView.as_view()
