@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Comment
+from user.serializers import UserInfoSerializer
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -17,6 +18,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class GetCommentSerializer(serializers.ModelSerializer):
     replies = CommentSerializer(many=True)
+    user = UserInfoSerializer(many=False)
 
     class Meta:
         model = Comment

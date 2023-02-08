@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        ref_name = "user"
         fields = [
             "id",
             "first_name",
@@ -60,6 +59,20 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "bus_name",
+            "is_vendor",
+            "is_verified",
+            "profile_image",
+        ]
 
 
 class UserPublicSerializer(serializers.ModelSerializer):
