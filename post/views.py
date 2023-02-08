@@ -20,9 +20,11 @@ class CreatePost(GenericAPIView):
 
     def post(self, request):
         post_data = request.data
-        username = post_data["user"]
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(id=user_id)
             post_data["user"] = user
             new_post = Post(**post_data)
             new_post.save()
