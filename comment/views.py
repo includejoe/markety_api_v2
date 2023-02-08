@@ -5,7 +5,11 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.exceptions import ParseError, APIException
 
 from base.utils import jwt_decode, delete_success
-from .serializers import CreateCommentSerializer, CommentSerializer
+from .serializers import (
+    CreateCommentSerializer,
+    CommentSerializer,
+    GetCommentSerializer,
+)
 from .models import Comment
 from user.models import User
 from post.models import Post
@@ -63,7 +67,7 @@ reply_comment_view = ReplyComment.as_view()
 # comments/<str:post_id>/
 class GetPostComments(GenericAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CommentSerializer
+    serializer_class = GetCommentSerializer
 
     def get(self, request, post_id):
         comments = Comment.objects.filter(post=post_id)

@@ -13,3 +13,11 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = "__all__"
+
+
+class GetCommentSerializer(serializers.ModelSerializer):
+    replies = CommentSerializer(many=True)
+
+    class Meta:
+        model = Comment
+        fields = "__all__"
