@@ -14,3 +14,5 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     body = models.TextField(max_length=1000)
     likes = models.ManyToManyField(User, related_name="liked_comments")
+    replies = models.ManyToManyField("self", blank=True, symmetrical=False)
+    is_reply = models.BooleanField(default=False)

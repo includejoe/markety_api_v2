@@ -8,6 +8,7 @@ from base.utils import jwt_decode, delete_success
 from .serializers import CreateCommentSerializer, CommentSerializer
 from .models import Comment
 from user.models import User
+from post.models import Post
 
 
 invalid_comment_id = "Invalid comment ID"
@@ -30,6 +31,34 @@ class CreateComment(GenericAPIView):
 
 
 create_comment_view = CreateComment.as_view()
+
+
+class ReplyComment(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CreateCommentSerializer
+
+    def patch(self, request, comment_id):
+        post_id = request.data["post"]
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+
+        try:
+            user = User.objects.get(id=user_id)
+            post = Post.objects.get(id=post_id)
+            request.data["post"] = post
+            reply = Comment(**request.data, user=user, is_reply=True)
+            reply.save()
+
+            comment_to_reply = Comment.objects.get(id=comment_id)
+            comment_to_reply.replies.add(reply)
+
+            serializer = self.serializer_class(reply)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise APIException(detail=e)
+
+
+reply_comment_view = ReplyComment.as_view()
 
 # comments/<str:post_id>/
 class GetPostComments(GenericAPIView):
