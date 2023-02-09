@@ -28,8 +28,8 @@ class CreatePost(GenericAPIView):
             post_data["user"] = user
             new_post = Post(**post_data)
             new_post.save()
-        except:
-            raise ParseError(detail="No user with this username found", code=400)
+        except Exception as e:
+            raise ParseError(detail=e, code=400)
 
         serializer = self.serializer_class(new_post)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
