@@ -10,7 +10,7 @@ class Post(admin.ModelAdmin):
         "name",
         "description",
         "price",
-        "condition",
+        "is_new",
         "image1",
         "image2",
         "image3",

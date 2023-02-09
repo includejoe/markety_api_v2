@@ -16,7 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "price",
-            "condition",
+            "is_new",
             "image1",
             "image2",
             "image3",
