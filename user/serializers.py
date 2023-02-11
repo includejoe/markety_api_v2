@@ -92,7 +92,6 @@ class UserPublicSerializer(serializers.ModelSerializer):
             "is_verified",
             "following",
             "followers",
-            "is_active",
         ]
 
 

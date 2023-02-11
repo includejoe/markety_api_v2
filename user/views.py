@@ -59,6 +59,21 @@ class CheckUsername(APIView):
 check_username_view = CheckUsername.as_view()
 
 
+class GetUserDetails(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.UserPublicSerializer
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise ParseError(detail=e, code=401)
+
+
+get_user_details_view = GetUserDetails.as_view()
+
 # user/follow/<str:user>/
 class FollowUser(GenericAPIView):
     serializer_class = serializers.FollowUserSerializer
