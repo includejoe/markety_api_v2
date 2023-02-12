@@ -26,12 +26,16 @@ class CreateComment(GenericAPIView):
     def post(self, request):
         token = request.headers["AUTHORIZATION"]
         user_id = jwt_decode(token)
-
         comment_data = {**request.data, "user": user_id}
-        serializer = self.serializer_class(data=comment_data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        create_serializer = self.serializer_class(data=comment_data)
+        create_serializer.is_valid(raise_exception=True)
+        create_serializer.save()
+
+        comment = Comment.objects.get(id=create_serializer.data["id"])
+        get_serializer = GetCommentSerializer(comment)
+
+        return Response(get_serializer.data, status=status.HTTP_200_OK)
 
 
 create_comment_view = CreateComment.as_view()
@@ -50,14 +54,24 @@ class ReplyComment(GenericAPIView):
             user = User.objects.get(id=user_id)
             post = Post.objects.get(id=post_id)
             request.data["post"] = post
-            reply = Comment(**request.data, user=user, is_reply=True)
+            comment_to_reply = Comment.objects.get(id=comment_id)
+
+            reply = Comment(
+                **request.data,
+                user=user,
+                is_reply=True,
+                og_comment_owner=comment_to_reply.user
+            )
             reply.save()
 
-            comment_to_reply = Comment.objects.get(id=comment_id)
+            # Add reply to og comment replies
             comment_to_reply.replies.add(reply)
+            create_serializer = self.serializer_class(reply)
 
-            serializer = self.serializer_class(reply)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # serialize saved reply and return data
+            reply_comment = Comment.objects.get(id=create_serializer.data["id"])
+            get_serializer = GetCommentSerializer(reply_comment)
+            return Response(get_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             raise APIException(detail=e)
 

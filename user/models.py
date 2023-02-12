@@ -8,7 +8,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
-# TODO: Add Rate and Reviews to model
+# TODO: Add Rating, SavedPosts and Reviews to model
 
 # Create your models here.
 class UserManager(BaseUserManager):

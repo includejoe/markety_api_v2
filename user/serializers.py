@@ -83,6 +83,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
             "last_name",
             "username",
             "bio",
+            "location",
             "posts",
             "bus_name",
             "bus_category",
