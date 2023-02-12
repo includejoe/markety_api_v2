@@ -1,6 +1,7 @@
 import uuid
-from django.utils import timezone
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from user.models import User
 from post.models import Post
@@ -16,3 +17,13 @@ class Comment(models.Model):
     likes = models.ManyToManyField(User, related_name="liked_comments")
     replies = models.ManyToManyField("self", blank=True, symmetrical=False)
     is_reply = models.BooleanField(default=False)
+    og_comment_owner = models.ForeignKey(
+        User, on_delete=models.Case, blank=True, null=True
+    )
+
+    # Check if comment is a reply and then add og_comment_owner
+    def clean(self):
+        if self.is_reply is True and self.og_comment_owner is None:
+            raise ValidationError(
+                {"og_comment_owner": "This field is required when is_reply is true"}
+            )

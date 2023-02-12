@@ -125,6 +125,7 @@ post_detail_view = PostDetail.as_view()
 
 # posts/
 class GetALlPosts(GenericAPIView):
+    # TODO: Add authentication and do not return logged in user posts
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
 
