@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "bus_website",
             "is_verified",
             "posts",
+            "saved_posts",
             "followers",
             "following",
             "created_at",
@@ -102,6 +103,12 @@ class FollowUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["following"]
+
+
+class SavePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["saved_posts"]
 
 
 class BlockedUsersSerializer(serializers.ModelSerializer):

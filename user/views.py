@@ -6,6 +6,7 @@ from rest_framework.generics import RetrieveUpdateAPIView, GenericAPIView
 from rest_framework.views import APIView
 
 from base.utils import jwt_decode
+from post.models import Post
 from . import serializers
 from .models import User
 from .utils import is_username_valid
@@ -74,6 +75,35 @@ class GetUserDetails(GenericAPIView):
 
 get_user_details_view = GetUserDetails.as_view()
 
+
+class SavePost(GenericAPIView):
+    serializer_class = serializers.SavePostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, post_id):
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+        user = User.objects.get(id=user_id)
+
+        try:
+            post = Post.objects.get(id=post_id)
+            already_saved = user.saved_posts.filter(id=post_id).exists()
+
+            if already_saved:
+                user.saved_posts.remove(post)
+            else:
+                user.saved_posts.add(post)
+
+            user.save()
+            serializer = self.serializer_class(user)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise APIException(detail=e)
+
+
+save_post_view = SavePost.as_view()
+
 # user/follow/<str:user>/
 class FollowUser(GenericAPIView):
     serializer_class = serializers.FollowUserSerializer
@@ -105,7 +135,7 @@ class FollowUser(GenericAPIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            raise ParseError(detail=e, code=400)
+            raise APIException(detail=e)
 
 
 follow_user_view = FollowUser.as_view()
@@ -184,7 +214,7 @@ class BlockUser(GenericAPIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            raise ParseError(detail=e, code=400)
+            raise APIException(detail=e)
 
 
 block_user_view = BlockUser.as_view()

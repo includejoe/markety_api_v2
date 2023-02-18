@@ -59,6 +59,26 @@ class GetUserPosts(GenericAPIView):
 get_user_posts_view = GetUserPosts.as_view()
 
 
+class GetUserSavedPosts(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+
+    def get(self, request):
+        token = request.headers["AUTHORIZATION"]
+        user_id = jwt_decode(token)
+        user = User.objects.get(id=user_id)
+
+        try:
+            posts = Post.objects.filter(saved_by=user)
+            serializer = self.serializer_class(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            raise APIException(detail=e)
+
+
+get_user_saved_posts_view = GetUserSavedPosts.as_view()
+
+
 # posts/<str:post_id>/
 class PostDetail(GenericAPIView):
     permission_classes = [IsAuthenticated]
