@@ -18,6 +18,7 @@ class Post(models.Model):
     image3 = models.URLField()
     is_sold = models.BooleanField(default=False)
     likes = models.ManyToManyField(User, related_name="likes", blank=True)
+    saved_by = models.ManyToManyField(User, related_name="saved_posts", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
