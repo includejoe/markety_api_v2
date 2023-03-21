@@ -1,6 +1,5 @@
 import os
 import environ
-import django_heroku
 from pathlib import Path
 from datetime import timedelta
 
@@ -110,7 +109,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -147,5 +146,3 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-
-django_heroku.settings(locals())
