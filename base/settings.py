@@ -2,6 +2,7 @@ import os
 import environ
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
 
 
 env = environ.Env()
@@ -78,6 +79,9 @@ DATABASES = {
     }
 }
 
+# Cloud Database
+# DATABASES = {"default": dj_database_url.parse(env("POSTGRESQL_DATABASE_URL"))}
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -107,9 +111,9 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
