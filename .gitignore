@@ -1,9 +1,37 @@
-env
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.dll
+
+# Local development settings
 .env
+.env.*
+.local/
 sandbox.py
-<<<<<<< HEAD
-verify_aws@2023.pem
-=======
+db.sqlite3
+
+# Django generated files
+/staticfiles/
+/static/
+/media/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE and editor specific files
+.vscode/
+
+# Package manager files
+pip-lock.txt
+
+# Miscellaneous
+*.DS_Store
+Thumbs.db
+google_vision_gpt.md
 verify_aws@2023.pem
 .vercel
->>>>>>> develop
